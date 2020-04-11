@@ -91,4 +91,4 @@ java.util.Date" %><%
 	}
 	
 %>
-<title>Daily_Contacts_CrossTab_Report</title>
+<title>Daily_Contacts_CrossTab_Reports</title>
