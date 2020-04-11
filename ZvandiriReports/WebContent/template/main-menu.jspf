@@ -1,0 +1,318 @@
+<%@page import="org.zvandiri.reports.DBUtils"%>
+<%@page import="org.apache.commons.io.FilenameUtils"%>
+<%@page import="javax.annotation.security.RolesAllowed"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.net.URL"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.io.File"%>
+<%@page import="java.util.List"%>
+<%@ page import="java.nio.file.Files" %>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%!
+	List<String> daily=new ArrayList();
+	List<String> weekly=new ArrayList();
+	List<String> monthly=new ArrayList();
+	List<String> quarterly=new ArrayList();
+	List<String> yearly=new ArrayList();
+	List<String> more=new ArrayList();
+	String report_name="";
+	Date when=new Date();
+	
+%>
+<%
+	File jsp = new File(request.getSession().getServletContext().getRealPath(request.getServletPath())).getParentFile();
+	String dirPath = "Reports/";
+	
+
+   
+   File dir=new File(jsp.getAbsolutePath()+"/Reports/");
+   //File dir=new File(DBUtils.location);
+	File[] reports = dir.listFiles();
+	
+	 for(File file: reports)
+	{
+		 System.out.println(file.getName());
+		if(file.getName().startsWith("Daily")){
+			daily.add(file.getName());
+		}
+		else if(file.getName().startsWith("Weekly")){
+			weekly.add(file.getName());
+		}
+		else if(file.getName().startsWith("Monthly")){
+			monthly.add(file.getName());
+		}
+		else if(file.getName().startsWith("Quarterly")){
+			quarterly.add(file.getName());
+		}else if(file.getName().startsWith("Yearly")){
+			yearly.add(file.getName());
+		}else{
+			more.add(file.getName());
+		}
+	}
+	 
+	 List<String> roles=(List<String>)request.getSession().getAttribute("roles"); 
+	
+	
+%>
+<div class="row">
+
+ 
+    
+	    <div class=" col-md-4">
+	        <div class="panel panel-primary">
+	            <div class="panel-heading">
+	                <div class="row">
+	                    <div class="medium">
+	                        <div>Daily Reports</div>
+	                    </div>
+	                </div>
+	            </div>
+	                <div class="panel-body">       	                                                            	
+	                    <c:forEach var="report" items="<%=daily%>">
+	                    	<c:set var="rep" value='${fn:substringBefore(report,".")}'></c:set>
+	                    	<c:set var="roles" value="<%=roles%>"></c:set> 	
+						    <c:choose>
+							    <c:when test = "${fn:containsIgnoreCase(rep, 'CrossTab')}">
+							    	<c:if test='${roles.contains("ROLE_MANAGEMENT") || roles.contains("ROLE_MOBILE") || roles.contains("ROLE_M_AND_E_OFFICER") || roles.contains("ROLE_HOD_M_AND_E")}'>
+								        <a style="font-size:10px; font-weight: bold;" href='viewers/daily/${rep}-viewer.jsp?report_name=${report}' target="_blank">
+									        <c:set value="${report}" scope="session" var="report_name"></c:set>
+						                    <span class="pull-right"><c:out value="${report}"/></span>
+						                    <span class="pull-left"><i class="fa fa-book"></i></span>
+				                    	</a><br/>
+			                    	</c:if>
+							    </c:when>    
+							    <c:otherwise>
+							        <a style="font-size:10px; font-weight: bold;" href='viewers/daily/${rep}-viewer.jsp?report_name=${report}' target="_blank">
+								        <c:set value="${report}" scope="session" var="report_name"></c:set>
+					                    <span class="pull-right"><c:out value="${report}"/></span>
+					                    <span class="pull-left"><i class="fa fa-book"></i></span>
+			                    	</a><br/>
+							    </c:otherwise>
+							</c:choose>
+					    </c:forEach>
+					    
+	                </div>
+	            
+	        </div>
+	    </div>
+	   
+	   
+	   <div class=" col-md-4">
+	        <div class="panel panel-primary">
+	            <div class="panel-heading">
+	                <div class="row">
+	                    <div class="medium">
+	                        <div>Weekly Reports</div>
+	                    </div>
+	                </div>
+	            </div>
+	                <div class="panel-body">
+	                	
+	                    <c:forEach var="report" items="<%=weekly%>">
+	                        <c:set var="rep" value='${fn:substringBefore(report,".")}'></c:set>
+	                    	<c:set var="roles" value="<%=roles%>"></c:set> 	
+						    <c:choose>
+							    <c:when test = "${fn:containsIgnoreCase(rep, 'CrossTab')}">
+							    	<c:if test='${roles.contains("ROLE_MANAGEMENT") || roles.contains("ROLE_MOBILE") || roles.contains("ROLE_M_AND_E_OFFICER") || roles.contains("ROLE_HOD_M_AND_E")}'>
+								        <a style="font-size:10px; font-weight: bold;" href='viewers/weekly/${rep}-viewer.jsp?report_name=${report}' target="_blank">
+									        <c:set value="${report}" scope="session" var="report_name"></c:set>
+						                    <span class="pull-right"><c:out value="${report}"/></span>
+						                    <span class="pull-left"><i class="fa fa-book"></i></span>
+				                    	</a><br/>
+			                    	</c:if>
+							    </c:when>    
+							    <c:otherwise>
+							        <a style="font-size:10px; font-weight: bold;" href='viewers/weekly/${rep}-viewer.jsp?report_name=${report}' target="_blank">
+								        <c:set value="${report}" scope="session" var="report_name"></c:set>
+					                    <span class="pull-right"><c:out value="${report}"/></span>
+					                    <span class="pull-left"><i class="fa fa-book"></i></span>
+			                    	</a><br/>
+							    </c:otherwise>
+							</c:choose>
+					    </c:forEach>
+					    
+	                </div>
+	            
+	        </div>
+	    </div>
+	   
+	   
+	   <div class=" col-md-4">
+	        <div class="panel panel-primary">
+	            <div class="panel-heading">
+	                <div class="row">
+	                    <div class="medium">
+	                        <div>Monthly Reports</div>
+	                    </div>
+	                </div>
+	            </div>
+	                <div class="panel-body">
+	                	
+	                    <c:forEach var="report" items="<%=monthly%>">
+	                        <c:set var="rep" value='${fn:substringBefore(report,".")}'></c:set>
+	                    	<c:set var="roles" value="<%=roles%>"></c:set> 	
+						    <c:choose>
+							    <c:when test = "${fn:containsIgnoreCase(rep, 'CrossTab')}">
+							    	<c:if test='${roles.contains("ROLE_MANAGEMENT") || roles.contains("ROLE_MOBILE") || roles.contains("ROLE_M_AND_E_OFFICER") || roles.contains("ROLE_HOD_M_AND_E")}'>
+								        <a style="font-size:10px; font-weight: bold;" href='viewers/monthly/${rep}-viewer.jsp' target="_blank">
+									        <c:set value="${report}" scope="session" var="report_name"></c:set>
+						                    <span class="pull-right"><c:out value="${report}"/></span>
+						                    <span class="pull-left"><i class="fa fa-book"></i></span>
+				                    	</a><br/>
+			                    	</c:if>
+							    </c:when>    
+							    <c:otherwise>
+							        <a style="font-size:10px; font-weight: bold;" href='viewers/monthly/${rep}-viewer.jsp' target="_blank">
+								        <c:set value="${report}" scope="session" var="report_name"></c:set>
+					                    <span class="pull-right"><c:out value="${report}"/></span>
+					                    <span class="pull-left"><i class="fa fa-book"></i></span>
+			                    	</a><br/>
+							    </c:otherwise>
+							</c:choose>
+					    </c:forEach>
+					    
+	                </div>
+	            
+	        </div>
+	    </div>
+	       
+	    
+	    <div class=" col-md-4">
+	        <div class="panel panel-primary">
+	            <div class="panel-heading">
+	                <div class="row">
+	                    <div class="medium">
+	                        <div>Quarterly Reports</div>
+	                    </div>
+	                </div>
+	            </div>
+	                <div class="panel-body">
+	                	
+	                    <c:forEach var="report" items="<%=quarterly%>">
+	                         <c:set var="rep" value='${fn:substringBefore(report,".")}'></c:set>
+	                    	<c:set var="roles" value="<%=roles%>"></c:set> 	
+						    <c:choose>
+							    <c:when test = "${fn:containsIgnoreCase(rep, 'CrossTab')}">
+							    	<c:if test='${roles.contains("ROLE_MANAGEMENT") || roles.contains("ROLE_MOBILE") || roles.contains("ROLE_M_AND_E_OFFICER") || roles.contains("ROLE_HOD_M_AND_E")}'>
+								        <a style="font-size:10px; font-weight: bold;" href='viewers/quarterly/${rep}-viewer.jsp?report_name=${report}' target="_blank">
+									        <c:set value="${report}" scope="session" var="report_name"></c:set>
+						                    <span class="pull-right"><c:out value="${report}"/></span>
+						                    <span class="pull-left"><i class="fa fa-book"></i></span>
+				                    	</a><br/>
+			                    	</c:if>
+							    </c:when>    
+							    <c:otherwise>
+							        <a style="font-size:10px; font-weight: bold;" href='viewers/quarterly/${rep}-viewer.jsp?report_name=${report}' target="_blank">
+								        <c:set value="${report}" scope="session" var="report_name"></c:set>
+					                    <span class="pull-right"><c:out value="${report}"/></span>
+					                    <span class="pull-left"><i class="fa fa-book"></i></span>
+			                    	</a><br/>
+							    </c:otherwise>
+							</c:choose>
+					    </c:forEach>
+					    
+	                </div>
+	            
+	        </div>
+	    </div>
+	    
+	    
+	    <div class=" col-md-4" >
+	        <div class="panel panel-primary">
+	            <div class="panel-heading">
+	                <div class="row">
+	                    <div class="medium">
+	                        <div>Yearly Reports</div>
+	                    </div>
+	                </div>
+	            </div>
+	                <div class="panel-body" >
+	                	
+	                    <c:forEach var="report" items="<%=yearly%>">
+	                         <c:set var="rep" value='${fn:substringBefore(report,".")}'></c:set>
+	                    	<c:set var="roles" value="<%=roles%>"></c:set> 	
+						    <c:choose>
+							    <c:when test = "${fn:containsIgnoreCase(rep, 'CrossTab')}">
+							    	<c:if test='${roles.contains("ROLE_MANAGEMENT") || roles.contains("ROLE_MOBILE") || roles.contains("ROLE_M_AND_E_OFFICER") || roles.contains("ROLE_HOD_M_AND_E")}'>
+								        <a style="font-size:10px; font-weight: bold;" href='viewers/yearly/${rep}-viewer.jsp?report_name=${report}' target="_blank">
+									        <c:set value="${report}" scope="session" var="report_name"></c:set>
+						                    <span class="pull-right"><c:out value="${report}"/></span>
+						                    <span class="pull-left"><i class="fa fa-book"></i></span>
+				                    	</a><br/>
+			                    	</c:if>
+							    </c:when>    
+							    <c:otherwise>
+							        <a style="font-size:10px; font-weight: bold;" href='viewers/yearly/${rep}-viewer.jsp?report_name=${report}' target="_blank">
+								        <c:set value="${report}" scope="session" var="report_name"></c:set>
+					                    <span class="pull-right"><c:out value="${report}"/></span>
+					                    <span class="pull-left"><i class="fa fa-book"></i></span>
+			                    	</a><br/>
+							    </c:otherwise>
+							</c:choose>
+					    </c:forEach>
+					    
+	                </div>
+	            
+	        </div>
+	    </div>
+	    
+	    
+	    <div class=" col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="medium">
+                        <div>More Reports</div>
+                    </div>
+                </div>
+            </div>
+                <div class="panel-body">
+                	
+                    <c:forEach var="report" items="<%=more%>">
+                    	<c:set var="rep" value='${fn:substringBefore(report,".")}'></c:set>
+	                    	<c:set var="roles" value="<%=roles%>"></c:set> 	
+						    <c:choose>
+							    <c:when test = "${fn:containsIgnoreCase(rep, 'CrossTab')}">
+							    	<c:if test='${roles.contains("ROLE_MANAGEMENT") || roles.contains("ROLE_MOBILE") || roles.contains("ROLE_M_AND_E_OFFICER") || roles.contains("ROLE_HOD_M_AND_E")}'>
+								        <a style="font-size:10px; font-weight: bold;" href='viewers/more/${rep}-viewer.jsp?report_name=${report}' target="_blank">
+									        <c:set value="${report}" scope="session" var="report_name"></c:set>
+						                    <span class="pull-right"><c:out value="${report}"/></span>
+						                    <span class="pull-left"><i class="fa fa-book"></i></span>
+				                    	</a><br/>
+			                    	</c:if>
+							    </c:when>    
+							    <c:otherwise>
+							        <a style="font-size:10px; font-weight: bold;" href='viewers/more/${rep}-viewer.jsp?report_name=${report}' target="_blank">
+								        <c:set value="${report}" scope="session" var="report_name"></c:set>
+					                    <span class="pull-right"><c:out value="${report}"/></span>
+					                    <span class="pull-left"><i class="fa fa-book"></i></span>
+			                    	</a><br/>
+							    </c:otherwise>
+							</c:choose>
+				    </c:forEach>
+				    
+                </div>
+            
+        </div>
+    </div>
+   
+   
+</div>
+
+<%
+	daily=new ArrayList();
+	weekly=new ArrayList();
+	monthly=new ArrayList();
+	quarterly=new ArrayList();
+	yearly=new ArrayList();
+	more=new ArrayList();
+	report_name="";
+	when=new Date();
+	roles=new ArrayList();
+%>
+
+
+
